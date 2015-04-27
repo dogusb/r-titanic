@@ -1,0 +1,53 @@
+#setting current working directory
+setwd("C:/Users/N53077/Desktop/R-TITANIC");
+
+#reading from csv to dataset
+missing.types <- c("NA", "")
+train <- read.csv("C:/Users/N53077/Desktop/R-TITANIC/train.csv",na.strings=missing.types)
+
+
+#Missing values map
+#missmap fonksiyonu için Amelia paketinin yüklenmesi gerekir
+
+install.packages("Amelia")
+
+#Amelia paketinin eklenmesi
+
+require(Amelia)
+missmap(train.mv, col=c("yellow","black"),legend=FALSE)
+
+# readData adında bir function tanımlanması
+readData <- function(path.name, file.name, column.types, missing.types) {
+  read.csv(  paste(path.name, file.name, sep=""), 
+            colClasses=column.types,
+            na.strings=missing.types )
+}
+
+# R tüm text verileri FACTOR olarak alır ve gruplar, bu nedenle NAME, TICKET gibi alanların factor
+# olarak tanımlanmaması daha doğrudur. 
+# Veri setinin daha düzgün okunabilmesi için aşağıdaki yöntem daha uygundur.
+Titanic.path <- "C:/Users/N53077/Desktop/R-TITANIC/"
+train.data.file <- "train.csv"
+missing.types <- c("NA", "")
+train.column.types <- c('integer',   # PassengerId
+                        'factor',    # Survived 
+                        'factor',    # Pclass
+                        'character', # Name
+                        'factor',    # Sex
+                        'numeric',   # Age
+                        'integer',   # SibSp
+                        'integer',   # Parch
+                        'character', # Ticket
+                        'numeric',   # Fare
+                        'character', # Cabin
+                        'factor'     # Embarked
+)
+
+train.raw <- readData(Titanic.path,train.data.file,train.column.types,missing.types)
+df.train <- train.raw
+
+# Kolon bazında histogram
+hist(df.train$Age)
+
+# Karşılaştırmalı Graph (mosaic)
+mosaicplot(df.train$Pclass ~ df.train$Survived,main="Passenger Fate By PClass", color=TRUE,  xlab="Age", ylab="Survived")
